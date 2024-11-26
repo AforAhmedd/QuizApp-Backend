@@ -2,21 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DraftQuiz, DraftQuizDocument } from './draft-quiz.schema';
+import { Quiz, QuizDocument } from '../quizzes/quiz.schema';  // Import the Quiz schema
 
 @Injectable()
 export class DraftQuizzesService {
-  constructor(@InjectModel(DraftQuiz.name) private draftQuizModel: Model<DraftQuizDocument>) {}
+  constructor(
+    @InjectModel(DraftQuiz.name) private draftQuizModel: Model<DraftQuizDocument>,
+    @InjectModel(Quiz.name) private quizModel: Model<QuizDocument>,  // Inject the Quiz model
+  ) {}
 
   async createDraftQuiz(data: DraftQuiz): Promise<DraftQuiz> {
-    try {
-      const createdDraft = new this.draftQuizModel(data);
-      return await createdDraft.save();
-    } catch (error) {
-      console.error('Error saving draft quiz:', error);
-      throw error;
-    }
+    const createdDraft = new this.draftQuizModel(data);
+    return createdDraft.save();
   }
-  
 
   async getAllDraftQuizzes(): Promise<DraftQuiz[]> {
     return this.draftQuizModel.find().exec();
@@ -32,5 +30,25 @@ export class DraftQuizzesService {
 
   async deleteDraftQuiz(id: string): Promise<void> {
     await this.draftQuizModel.findByIdAndDelete(id).exec();
+  }
+
+  // New method to publish a draft quiz
+  async publishDraftQuiz(id: string): Promise<any> {
+    // Find the draft quiz by ID
+    const draftQuiz = await this.draftQuizModel.findById(id).exec();
+    if (!draftQuiz) {
+      throw new Error('Draft quiz not found');
+    }
+
+    // Create a new quiz document using the draft data
+    const publishedQuiz = new this.quizModel(draftQuiz.toObject());
+
+    // Save the published quiz in the quizzes collection
+    await publishedQuiz.save();
+
+    // Delete the quiz from the drafts collection
+    await this.draftQuizModel.findByIdAndDelete(id).exec();
+
+    return { message: 'Draft quiz successfully published' };
   }
 }

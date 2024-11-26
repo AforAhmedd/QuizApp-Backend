@@ -30,4 +30,10 @@ export class DraftQuizzesController {
   async deleteDraftQuiz(@Param('id') id: string) {
     return this.draftQuizzesService.deleteDraftQuiz(id);
   }
+
+  // New endpoint to publish a draft quiz
+  @Put(':id/publish')
+  async publishDraftQuiz(@Param('id') id: string) {
+    return this.draftQuizzesService.publishDraftQuiz(id);
+  }
 }
