@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DraftQuiz, DraftQuizDocument } from './draft-quiz.schema';
-import { Quiz, QuizDocument } from '../quizzes/quiz.schema';  // Import the Quiz schema
+import { Quiz, QuizDocument } from '../quizzes/quiz.schema'; 
 
 @Injectable()
 export class DraftQuizzesService {
   constructor(
     @InjectModel(DraftQuiz.name) private draftQuizModel: Model<DraftQuizDocument>,
-    @InjectModel(Quiz.name) private quizModel: Model<QuizDocument>,  // Inject the Quiz model
+    @InjectModel(Quiz.name) private quizModel: Model<QuizDocument>,  
   ) {}
 
   async createDraftQuiz(data: DraftQuiz): Promise<DraftQuiz> {
@@ -32,7 +32,6 @@ export class DraftQuizzesService {
     await this.draftQuizModel.findByIdAndDelete(id).exec();
   }
 
-  // New method to publish a draft quiz
   async publishDraftQuiz(id: string): Promise<any> {
     // Find the draft quiz by ID
     const draftQuiz = await this.draftQuizModel.findById(id).exec();

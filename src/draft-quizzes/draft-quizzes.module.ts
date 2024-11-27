@@ -3,12 +3,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DraftQuiz, DraftQuizSchema } from './draft-quiz.schema';
 import { DraftQuizzesService } from './draft-quizzes.service';
 import { DraftQuizzesController } from './draft-quizzes.controller';
-import { Quiz, QuizSchema } from '../quizzes/quiz.schema';  // Import the Quiz schema for publishing
+import { Quiz, QuizSchema } from '../quizzes/quiz.schema';  
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: DraftQuiz.name, schema: DraftQuizSchema }]),
-    MongooseModule.forFeature([{ name: Quiz.name, schema: QuizSchema }]),  // Import the Quiz model for publishing
+    MongooseModule.forFeature([{ name: Quiz.name, schema: QuizSchema }]),  
   ],
   providers: [DraftQuizzesService],
   controllers: [DraftQuizzesController],
